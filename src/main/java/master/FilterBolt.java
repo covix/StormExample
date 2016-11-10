@@ -12,30 +12,34 @@ import java.util.Map;
  * Created by covix on 04/11/2016.
  */
 class FilterBolt extends BaseRichBolt {
-
-    private String fieldName;
+    private String fieldname;
     private int thr;
     private String alarmLabel;
 
-    FilterBolt(String fieldName, int thr, String alarmLabel) {
-        this.fieldName = fieldName;
+    public FilterBolt(String fieldname, int thr, String alarmLabel) {
+        this.fieldname = fieldname;
         this.thr = thr;
         this.alarmLabel = alarmLabel;
     }
 
-    public void prepare(Map map, TopologyContext topologyContext, OutputCollector outputCollector) {
+    public void prepare(Map stormConf, TopologyContext context, OutputCollector collector) {
+        //NOTHING TO PREPARE
+
     }
 
     public void execute(Tuple input) {
-        int roomID = (Integer) input.getValueByField(TempSpout.ROOM_NAME);
-        int valueByField = (Integer) input.getValueByField(this.fieldName);
+        System.out.println("Received: " + input.getValues());
+        int valueByField = (Integer) input.getValueByField(fieldname);
 
         if (valueByField > thr) {
-            System.out.println(this.alarmLabel + ", " + roomID + ", " + valueByField);
+            System.out.println(alarmLabel + ", " + input.getValueByField(TemperatureSpout.ROOM_FIELDNAME) +
+                    ", " + valueByField);
         }
+
     }
 
-    public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer) {
-        // no output stream
+    public void declareOutputFields(OutputFieldsDeclarer declarer) {
+        // NO OUTPUTS
+
     }
 }
